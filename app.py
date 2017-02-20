@@ -36,3 +36,12 @@ def main():
         return redirect('/')
     changelogs = Changelog.query.all()
     return render_template('base.html', changelogs=changelogs, form=form)
+
+
+@flask_app.route('/<package_name>')
+def where_is_it(package_name):
+    try:
+        the_changelog = Changelog.query.filter_by(package_name=package_name).first()
+        return redirect(the_changelog.changelog_url)
+    except:
+        return redirect('/')
