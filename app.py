@@ -1,6 +1,7 @@
 import os
+import urllib
 
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -28,13 +29,14 @@ ChangelogForm = model_form(Changelog, base_class=FlaskForm)
 
 @flask_app.route('/', methods=('GET', 'POST'))
 def main():
-    form = ChangelogForm()
+    form = ChangelogForm(data={'package_name': request.args.get('new_package')})
     if form.validate_on_submit():
         changelog = Changelog(package_name=form.package_name.data, changelog_url=form.changelog_url.data)
         db.session.add(changelog)
         db.session.commit()
         return redirect('/')
     changelogs = Changelog.query.all()
+
     return render_template('base.html', changelogs=changelogs, form=form)
 
 
@@ -44,4 +46,4 @@ def where_is_it(package_name):
         the_changelog = Changelog.query.filter_by(package_name=package_name).first()
         return redirect(the_changelog.changelog_url)
     except:
-        return redirect('/')
+        return redirect('/?{}'.format(urllib.parse.urlencode({'new_package': package_name})))
