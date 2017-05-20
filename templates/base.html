@@ -9,6 +9,15 @@
 
 	<h1>Where's the Changelog?</h1>
 
+ <p>
+  <form action="/" method="POST">
+   {{ form.csrf_token }}
+   {{ form.package_name(placeholder=form.package_name.label.text) }}
+   {{ form.changelog_url(placeholder=form.changelog_url.label.text) }}
+   <button>Add</button>
+  </form>
+ </p>
+
  <table>
   <thead>
    <tr>
@@ -29,15 +38,6 @@
   {% endfor %}
   </tbody>
  </table>
-
- <h2>Add a package</h2>
-
- <form action="/" method="POST">
-  {{ form.csrf_token }}
-  <label>{{ form.package_name.label }} {{ form.package_name }}</label>
-  <label>{{ form.changelog_url.label }} {{ form.changelog_url }}</label>
-  <button>Add</button>
- </form>
 
 </body>
 </html>
